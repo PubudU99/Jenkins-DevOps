@@ -11,28 +11,27 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {  
-                bat 'docker build -t pubudu123/nodeapp-cuban:%BUILD_NUMBER% .'
+                sh 'docker build -t pubudu123/nodeapp-cuban:$BUILD_NUMBER .'
             }
         }
         stage('Login to Docker Hub') {
             steps {
                 withCredentials([string(credentialsId: 'DockerPassword', variable: 'DockerPswd')]) {
-
                     script {
-                        bat "docker login -u pubudu123 -p %DockerPswd%"
+                        sh "docker login -u pubudu123 -p $DockerPswd"
                     }
                 }
             }
         }
         stage('Push Image') {
             steps {
-                bat 'docker push pubudu123/nodeapp-cuban:%BUILD_NUMBER%'
+                sh 'docker push pubudu123/nodeapp-cuban:$BUILD_NUMBER'
             }
         }
     }
     post {
         always {
-            bat 'docker logout'
+            sh 'docker logout'
         }
     }
 }
